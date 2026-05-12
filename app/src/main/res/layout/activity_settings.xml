@@ -26,20 +26,28 @@
             app:drawableStartCompat="@drawable/arrow_back" />
     </FrameLayout>
 
-    <Switch
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="61dp"
-        android:layout_gravity="start"
         android:layout_marginTop="40dp"
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="@dimen/default_margin">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/yandex_sans_display"
+            android:text="@string/settings_dark_theme"
+            android:textColor="@color/black"
+            android:textSize="@dimen/settings_text" />
 
-        android:fontFamily="@font/yandex_sans_display"
-        android:text="@string/settings_dark_theme"
-        android:textColor="@color/black"
-        android:textSize="@dimen/settings_text"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            />
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
