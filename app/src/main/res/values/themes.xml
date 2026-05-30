@@ -14,6 +14,8 @@
         <!-- Customize your theme here. -->
         <item name="colorAccent">@color/gray</item>
         <item name="colorOnSecondaryFixed">@color/gray</item>
+        <item name="colorOnPrimaryFixed">@color/blue</item>
+
 
     </style>
 
