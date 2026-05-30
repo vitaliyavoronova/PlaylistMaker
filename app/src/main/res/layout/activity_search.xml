@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/search"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/search_back"
+        app:title="@string/app_search"
+        app:navigationIcon="@drawable/arrow_back"
+        app:navigationIconTint="?attr/colorOnSecondary"
+        app:titleTextAppearance="@style/Header"
+        app:contentInsetStartWithNavigation="64dp"
+        style="@style/Header"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin"
+        android:layout_marginVertical="8dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_corners"
+        android:paddingHorizontal="12dp"
+        >
+
+        <EditText
+            android:id="@+id/search_main"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="36dp"
+            android:drawableStart="@drawable/search"
+            android:drawablePadding="@dimen/icon_padding"
+            android:inputType="text"
+            android:hint="@string/search_main"
+            android:lines="1"
+            android:maxLength="50"
+            android:background="@android:color/transparent"
+            style="@style/SearchField"/>
+
+        <ImageView
+            android:id="@+id/clear_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/cross"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            app:tint="@color/gray"
+            android:visibility="gone"/>
+    </LinearLayout>
+</LinearLayout>

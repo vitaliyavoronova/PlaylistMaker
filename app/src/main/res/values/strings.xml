@@ -11,5 +11,13 @@
     <string name="settings_share">Поделиться приложением</string>
     <string name="settings_support">Написать в поддержку</string>
     <string name="settings_eula">Пользовательское соглашение</string>
+    <string name="share_url">https://practicum.yandex.ru/android-developer</string>
+    <string name="eula_url">https://yandex.ru/legal/practicum_offer/ru</string>
+    <string name="support_mailto">malavita21@yandex.ru</string>
+    <string name="support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="support_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+
+    <!-- Экран поиска -->
+    <string name="search_main">Поиск</string>
 
 </resources>
