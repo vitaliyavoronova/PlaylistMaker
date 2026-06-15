@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 
 class SearchActivity : AppCompatActivity() {
@@ -43,7 +44,9 @@ class SearchActivity : AppCompatActivity() {
             inputMethodManager.hideSoftInputFromWindow(inputSearch.windowToken, 0)
         }
 
-
+        val recyclerView = findViewById<RecyclerView>(R.id.trackList)
+        val tracksAdapter = TrackAdapter(trackList)
+        recyclerView.adapter = tracksAdapter
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -63,8 +66,9 @@ class SearchActivity : AppCompatActivity() {
         }
         inputSearch.addTextChangedListener(simpleTextWatcher)
 
-
     }
+
+
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val SEARCH_DEF = ""
@@ -88,3 +92,4 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
+
