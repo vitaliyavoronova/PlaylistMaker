@@ -38,7 +38,9 @@
             android:lines="1"
             android:maxLength="50"
             android:background="@android:color/transparent"
-            style="@style/SearchField"/>
+            style="@style/SearchField"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
         <ImageView
             android:id="@+id/clear_icon"
@@ -53,9 +55,50 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/trackList"
+        android:id="@+id/tracklist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:visibility="gone"
         />
+
+    <TextView
+        android:id="@+id/empty_tracklist"
+        android:drawablePadding="@dimen/default_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_empty_tracklist"
+        android:layout_gravity="center"
+        android:layout_marginTop="102dp"
+        style="@style/SearchErrors"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/empty_tracklist" />
+
+    <LinearLayout
+        android:id="@+id/error_tracklist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="102dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:drawablePadding="@dimen/default_margin"
+            android:layout_marginHorizontal="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/search_error_tracklist"
+            android:layout_gravity="center"
+            style="@style/SearchErrors"
+            app:drawableTopCompat="@drawable/error_tracklist" />
+
+        <Button
+            android:id="@+id/search_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/search_error_refresh"
+            android:layout_marginTop="24dp"
+            style="@style/MediumButtonItem"/>
+    </LinearLayout>
 </LinearLayout>

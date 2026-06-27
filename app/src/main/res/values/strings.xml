@@ -19,5 +19,9 @@
 
     <!-- Экран поиска -->
     <string name="search_main">Поиск</string>
+    <string name="search_empty_tracklist">Ничего не нашлось</string>
+    <string name="search_error_tracklist">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="search_error_refresh">Обновить</string>
+
 
 </resources>
