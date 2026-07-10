@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/settings_back"
+        android:id="@+id/settingsBack"
         app:title="@string/app_settings"
         app:navigationIcon="@drawable/arrow_back"
         app:navigationIconTint="?attr/colorOnSecondary"
@@ -17,25 +17,25 @@
         style="@style/Header"
         />
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/dark_theme"
+        android:id="@+id/themeSwitcher"
         android:gravity="center_vertical"
         android:text="@string/settings_dark_theme"
         style="@style/SettingsMenuItem" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/share_button"
+        android:id="@+id/shareButton"
         android:drawableEnd="@drawable/share"
         android:text="@string/settings_share"
         style="@style/SettingsMenuItem"/>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/support_button"
+        android:id="@+id/supportButton"
         android:drawableEnd="@drawable/support"
         android:text="@string/settings_support"
         style="@style/SettingsMenuItem"/>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/eula_button"
+        android:id="@+id/eulaButton"
         android:drawableEnd="@drawable/arrow_forward"
         android:text="@string/settings_eula"
         style="@style/SettingsMenuItem"/>

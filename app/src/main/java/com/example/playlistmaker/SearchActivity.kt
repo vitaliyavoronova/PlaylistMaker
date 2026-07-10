@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -36,7 +37,30 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
-    private val adapter = TrackAdapter(tracks)
+    private lateinit var searchHistory: SearchHistory
+    private val adapter = TrackAdapter(tracks) { clickedTrack ->
+        searchHistory.saveTrack(clickedTrack)
+    }
+
+    private lateinit var searchHistoryView: LinearLayout
+    private lateinit var searchHistoryTracklist: RecyclerView
+    private lateinit var cleanHistory: Button
+
+    private fun updateHistoryView() {
+        val history = searchHistory.getHistory()
+
+        if (history.isEmpty()) {
+            searchHistoryView.visibility = View.GONE
+            return
+        }
+
+        searchHistoryView.visibility = View.VISIBLE
+
+        searchHistoryTracklist.adapter = TrackAdapter(history) { track ->
+            searchHistory.saveTrack(track)
+            updateHistoryView()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,16 +73,36 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
         val recyclerView = findViewById<RecyclerView>(R.id.tracklist)
-        val emptyTrackList = findViewById<TextView>(R.id.empty_tracklist)
-        val errorTrackList = findViewById<LinearLayout>(R.id.error_tracklist)
-        val inputSearch = findViewById<EditText>(R.id.search_main)
-        val clearButton = findViewById<ImageView>(R.id.clear_icon)
-        val backButton = findViewById<MaterialToolbar>(R.id.search_back)
-        val searchRefresh = findViewById<Button>(R.id.search_refresh)
-        recyclerView.adapter = adapter
+        val emptyTrackList = findViewById<TextView>(R.id.emptyTracklist)
+        val errorTrackList = findViewById<LinearLayout>(R.id.errorTracklist)
+        val inputSearch = findViewById<EditText>(R.id.searchMain)
+        val clearButton = findViewById<ImageView>(R.id.clearIcon)
+        val backButton = findViewById<MaterialToolbar>(R.id.searchBack)
+        val searchRefresh = findViewById<Button>(R.id.searchRefresh)
+        searchHistory = SearchHistory(getSharedPreferences("app_prefs", MODE_PRIVATE))
+        recyclerView.adapter = TrackAdapter(tracks) { track ->
+            searchHistory.saveTrack(track)
+        }
+
+        searchHistoryView = findViewById(R.id.searchHistory)
+        searchHistoryTracklist = findViewById(R.id.searchHistoryTracklist)
+        cleanHistory = findViewById(R.id.cleanHistory)
+
+        updateHistoryView()
+
+        cleanHistory.setOnClickListener {
+            searchHistory.clearHistory()
+            updateHistoryView()
+        }
 
         inputSearch.setText(searchText)
-
+        inputSearch.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && inputSearch.text.isEmpty()) {
+                updateHistoryView()
+            } else {
+                searchHistoryView.visibility = View.GONE
+            }
+        }
         inputSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputSearch.text.isNotEmpty()) {
@@ -105,7 +149,11 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+
+
+
     private fun apiSearch(inputSearch : EditText, recycler : RecyclerView, empty : TextView, error : LinearLayout) {
+        searchHistoryView.visibility = View.GONE
         iTunesService.search(inputSearch.text.toString()).enqueue(object : Callback<TracksResponse> {
             override fun onResponse(
                 call: Call<TracksResponse>,
