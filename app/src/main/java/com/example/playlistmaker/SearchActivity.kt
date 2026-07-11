@@ -80,9 +80,7 @@ class SearchActivity : AppCompatActivity() {
         val backButton = findViewById<MaterialToolbar>(R.id.searchBack)
         val searchRefresh = findViewById<Button>(R.id.searchRefresh)
         searchHistory = SearchHistory(getSharedPreferences("app_prefs", MODE_PRIVATE))
-        recyclerView.adapter = TrackAdapter(tracks) { track ->
-            searchHistory.saveTrack(track)
-        }
+        recyclerView.adapter = adapter
 
         searchHistoryView = findViewById(R.id.searchHistory)
         searchHistoryTracklist = findViewById(R.id.searchHistoryTracklist)
@@ -96,13 +94,15 @@ class SearchActivity : AppCompatActivity() {
         }
 
         inputSearch.setText(searchText)
-        inputSearch.setOnFocusChangeListener { view, hasFocus ->
+
+        inputSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && inputSearch.text.isEmpty()) {
                 updateHistoryView()
             } else {
                 searchHistoryView.visibility = View.GONE
             }
         }
+
         inputSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputSearch.text.isNotEmpty()) {
@@ -111,6 +111,7 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+
         searchRefresh.setOnClickListener {
             apiSearch(inputSearch, recyclerView, emptyTrackList, errorTrackList)
         }
@@ -127,6 +128,7 @@ class SearchActivity : AppCompatActivity() {
             emptyTrackList.visibility = View.GONE
             errorTrackList.visibility = View.GONE
             adapter.notifyDataSetChanged()
+            updateHistoryView()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -138,6 +140,11 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.isVisible = !s.isNullOrEmpty()
                 s?.let {
                     searchText = it.toString()
+                    if (searchText.isEmpty()) {
+                        recyclerView.visibility = View.GONE
+                        emptyTrackList.visibility = View.GONE
+                        errorTrackList.visibility = View.GONE
+                    }
                 }
             }
 
@@ -161,6 +168,7 @@ class SearchActivity : AppCompatActivity() {
             ) {
                 if (response.code() == 200) {
                     tracks.clear()
+                    adapter.notifyDataSetChanged()
                     if (response.body()?.results?.isNotEmpty() == true) {
                         tracks.addAll(response.body()?.results!!)
                         recycler.visibility = View.VISIBLE
@@ -186,7 +194,8 @@ class SearchActivity : AppCompatActivity() {
                 recycler.visibility = View.GONE
                 empty.visibility = View.GONE
                 error.visibility = View.VISIBLE
-                adapter.notifyDataSetChanged()                        }
+                adapter.notifyDataSetChanged()
+            }
         })
     }
 
@@ -206,11 +215,5 @@ class SearchActivity : AppCompatActivity() {
 
 }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-    }
+
 
