@@ -22,6 +22,8 @@
     <string name="search_empty_tracklist">Ничего не нашлось</string>
     <string name="search_error_tracklist">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="search_error_refresh">Обновить</string>
+    <string name="search_history">Вы искали</string>
+    <string name="search_clean_history">Очистить историю</string>
 
 
 </resources>
