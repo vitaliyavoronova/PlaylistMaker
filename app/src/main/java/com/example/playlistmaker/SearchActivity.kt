@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -40,11 +41,18 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistory: SearchHistory
     private val adapter = TrackAdapter(tracks) { clickedTrack ->
         searchHistory.saveTrack(clickedTrack)
+        startAudioPlayer(clickedTrack)
     }
 
     private lateinit var searchHistoryView: LinearLayout
     private lateinit var searchHistoryTracklist: RecyclerView
     private lateinit var cleanHistory: Button
+
+    private fun startAudioPlayer(track: Track) {
+        val audioplayerIntent = Intent(this, AudioPlayerActivity::class.java)
+        audioplayerIntent.putExtra("SELECTED_TRACK", track)
+        startActivity(audioplayerIntent)
+    }
 
     private fun updateHistoryView() {
         val history = searchHistory.getHistory()
@@ -59,6 +67,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryTracklist.adapter = TrackAdapter(history) { track ->
             searchHistory.saveTrack(track)
             updateHistoryView()
+            startAudioPlayer(track)
         }
     }
 
