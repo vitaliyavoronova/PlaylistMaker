@@ -25,5 +25,11 @@
     <string name="search_history">Вы искали</string>
     <string name="search_clean_history">Очистить историю</string>
 
+    <!-- Экран плеера -->
+    <string name="audioplayer_tracktime">Длительность</string>
+    <string name="audioplayer_album">Альбом</string>
+    <string name="audioplayer_genre">Жанр</string>
+    <string name="audioplayer_country">Страна</string>
+    <string name="audioplayer_year">Год</string>
 
 </resources>
