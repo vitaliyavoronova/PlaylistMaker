@@ -132,4 +132,13 @@
             android:text="@string/search_clean_history"
             android:layout_gravity="center_horizontal"/>
     </LinearLayout>
+
+    <ProgressBar android:id="@+id/progressBar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="140dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/blue"
+        android:visibility="gone"
+        />
 </LinearLayout>

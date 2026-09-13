@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -13,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -40,13 +43,29 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private lateinit var searchHistory: SearchHistory
     private val adapter = TrackAdapter(tracks) { clickedTrack ->
-        searchHistory.saveTrack(clickedTrack)
-        startAudioPlayer(clickedTrack)
+        if (clickDebounce()) {
+            searchHistory.saveTrack(clickedTrack)
+            startAudioPlayer(clickedTrack)
+        }
     }
 
     private lateinit var searchHistoryView: LinearLayout
     private lateinit var searchHistoryTracklist: RecyclerView
     private lateinit var cleanHistory: Button
+    private lateinit var progressBar: ProgressBar
+
+
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
 
     private fun startAudioPlayer(track: Track) {
         val audioplayerIntent = Intent(this, AudioPlayerActivity::class.java)
@@ -88,6 +107,13 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val backButton = findViewById<MaterialToolbar>(R.id.searchBack)
         val searchRefresh = findViewById<Button>(R.id.searchRefresh)
+        progressBar = findViewById(R.id.progressBar)
+        val apiSearchRunnable = Runnable { apiSearch(inputSearch, recyclerView, emptyTrackList, errorTrackList) }
+
+        fun searchDebounce() {
+            handler.removeCallbacks(apiSearchRunnable)
+            handler.postDelayed(apiSearchRunnable, SEARCH_DEBOUNCE_DELAY)
+        }
         searchHistory = SearchHistory(getSharedPreferences("app_prefs", MODE_PRIVATE))
         recyclerView.adapter = adapter
 
@@ -146,6 +172,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchDebounce()
                 clearButton.isVisible = !s.isNullOrEmpty()
                 s?.let {
                     searchText = it.toString()
@@ -170,6 +197,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun apiSearch(inputSearch : EditText, recycler : RecyclerView, empty : TextView, error : LinearLayout) {
         searchHistoryView.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
         iTunesService.search(inputSearch.text.toString()).enqueue(object : Callback<TracksResponse> {
             override fun onResponse(
                 call: Call<TracksResponse>,
@@ -183,18 +211,21 @@ class SearchActivity : AppCompatActivity() {
                         recycler.visibility = View.VISIBLE
                         empty.visibility = View.GONE
                         error.visibility = View.GONE
+                        progressBar.visibility = View.GONE
                         adapter.notifyDataSetChanged()
                     }
                     if (tracks.isEmpty()) {
                         recycler.visibility = View.GONE
                         empty.visibility = View.VISIBLE
                         error.visibility = View.GONE
+                        progressBar.visibility = View.GONE
                         adapter.notifyDataSetChanged()
                     }
                 } else {
                     recycler.visibility = View.GONE
                     empty.visibility = View.GONE
                     error.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
                     adapter.notifyDataSetChanged()
                 }
             }
@@ -203,6 +234,7 @@ class SearchActivity : AppCompatActivity() {
                 recycler.visibility = View.GONE
                 empty.visibility = View.GONE
                 error.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
                 adapter.notifyDataSetChanged()
             }
         })
@@ -211,7 +243,10 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val SEARCH_DEF = ""
+        const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
+
     var searchText : String = ""
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
